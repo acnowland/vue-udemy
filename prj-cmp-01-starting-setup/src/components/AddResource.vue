@@ -1,4 +1,17 @@
 <template>
+  <base-dialog v-if="isInvalidInput" @close="closeDialog">
+    <template #default>
+      <p>
+        Sorry, one or more of your input fields are blank or has an invalid
+        entry
+      </p>
+      <p>Please try again</p>
+    </template>
+    <template #actions>
+      <button @click="closeDialog">Close</button>
+    </template>
+  </base-dialog>
+
   <base-card>
     <form @submit.prevent="submitData">
       <div class="form-control">
@@ -30,12 +43,20 @@ export default {
     return {
       title: '',
       description: '',
-      link: ''
+      link: '',
+      isInvalidInput: false
     };
   },
   methods: {
     submitData() {
+      if (this.title === '' || this.description === '' || this.link === '') {
+        this.isInvalidInput = true;
+        return;
+      }
       this.addResource(this.title, this.description, this.link);
+    },
+    closeDialog() {
+      this.isInvalidInput = false;
     }
   }
 };
